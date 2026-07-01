@@ -2,7 +2,7 @@
 stud-devops_lab4-Ansible Roles
 
 Плейбук с ролями Nginx Vhost. Роль устанавливается на целевой хост и активировать vhost c заданным именем. Для vhost использовать j2 шаблон индексного файла и конфига. Родительский плейбук должен вызывать роль и список vhost передавать через переменную уровня в цикле.
-
+```
 ├── inventory
 ├── playbook.yml
 └── roles
@@ -14,7 +14,7 @@ stud-devops_lab4-Ansible Roles
         │   └── vhost.conf.j2
         └── handlers
             └── main.yml
-
+```
 После заливки файлов, запуск плейбука командой
 ```
 ansible-playbook -i inventory playbook.yml -K
