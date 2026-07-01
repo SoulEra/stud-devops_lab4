@@ -10,9 +10,12 @@
       - site3.local
 
   tasks:
-    - name: Применить роль для каждого vhost
-      include_role:
-        name: nginx-vhost
-      vars:
-        vhost_name: "{{ item }}"
-      loop: "{{ vhosts }}"
+     - name: Применить роль для каждого vhost
+       include_role:
+         name: nginx_vhost
+       vars:
+         vhost_name: "{{ item }}"
+         vhost_root_base: "/var/www"
+         vhost_port: 80
+         vhost_extra_params: ""
+       loop: "{{ vhosts }}"
