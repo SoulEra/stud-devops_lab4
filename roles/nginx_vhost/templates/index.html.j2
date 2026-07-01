@@ -1,0 +1,11 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Welcome to {{ vhost_name }}</title>
+</head>
+<body>
+    <h1>Welcome to {{ vhost_name }}!</h1>
+    <p>This is the default page for {{ vhost_name }}.</p>
+    <p>Server IP: {{ ansible_default_ipv4.address | default('unknown') }}</p>
+</body>
+</html>

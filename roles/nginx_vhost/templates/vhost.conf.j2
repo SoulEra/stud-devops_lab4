@@ -1,0 +1,14 @@
+server {
+    listen {{ vhost_port }};
+    server_name {{ vhost_name }};
+
+    root {{ vhost_root_base }}/{{ vhost_name }};
+    index index.html;
+
+    location / {
+        try_files $uri $uri/ =404;
+    }
+
+    # Дополнительные параметры, если заданы
+    {{ vhost_extra_params }}
+}

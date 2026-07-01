@@ -1,0 +1,82 @@
+---
+- name: Установка Nginx
+  apt:
+    name: nginx
+    state: present
+    update_cache: yes
+  when: ansible_os_family == "Debian"
+
+- name: Установка Nginx (RedHat)
+  yum:
+    name: nginx
+    state: present
+  when: ansible_os_family == "RedHat"
+
+- name: Создание корневой директории для vhost
+  file:
+    path: "{{ vhost_root_base }}/{{ vhost_name }}"
+    state: directory
+    owner: www-data
+    group: www-data
+    mode: '0755'
+  when: ansible_os_family == "Debian"
+
+- name: Создание корневой директории для vhost (RedHat)
+  file:
+    path: "{{ vhost_root_base }}/{{ vhost_name }}"
+    state: directory
+    owner: nginx
+    group: nginx
+    mode: '0755'
+  when: ansible_os_family == "RedHat"
+
+- name: Создание индексного файла из шаблона
+  template:
+    src: index.html.j2
+    dest: "{{ vhost_root_base }}/{{ vhost_name }}/index.html"
+    owner: www-data
+    group: www-data
+    mode: '0644'
+  when: ansible_os_family == "Debian"
+
+- name: Создание индексного файла из шаблона (RedHat)
+  template:
+    src: index.html.j2
+    dest: "{{ vhost_root_base }}/{{ vhost_name }}/index.html"
+    owner: nginx
+    group: nginx
+    mode: '0644'
+  when: ansible_os_family == "RedHat"
+
+- name: Создание конфигурации vhost из шаблона
+  template:
+    src: vhost.conf.j2
+    dest: "/etc/nginx/sites-available/{{ vhost_name }}.conf"
+    owner: root
+    group: root
+    mode: '0644'
+  when: ansible_os_family == "Debian"
+  notify: reload nginx
+
+- name: Создание конфигурации vhost из шаблона (RedHat)
+  template:
+    src: vhost.conf.j2
+    dest: "/etc/nginx/conf.d/{{ vhost_name }}.conf"
+    owner: root
+    group: root
+    mode: '0644'
+  when: ansible_os_family == "RedHat"
+  notify: reload nginx
+
+- name: Включение vhost (создание симлинка) – Debian
+  file:
+    src: "/etc/nginx/sites-available/{{ vhost_name }}.conf"
+    dest: "/etc/nginx/sites-enabled/{{ vhost_name }}.conf"
+    state: link
+  when: ansible_os_family == "Debian"
+  notify: reload nginx
+
+- name: Проверка конфигурации Nginx перед перезагрузкой
+  command: nginx -t
+  changed_when: false
+  notify: reload nginx

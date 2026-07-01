@@ -1,0 +1,18 @@
+---
+- name: Config Nginx vhosts
+  hosts: all
+  become: yes
+
+  vars:
+    vhosts:
+      - site1.local
+      - site2.local
+      - site3.local
+
+  tasks:
+    - name: Применить роль для каждого vhost
+      include_role:
+        name: nginx-vhost
+      vars:
+        vhost_name: "{{ item }}"
+      loop: "{{ vhosts }}"
